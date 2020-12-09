@@ -9,12 +9,19 @@ import UIKit
 import AVFoundation
 
 class MusicPlayerViewController: UIViewController {
+    
+    // 依照所點的目錄號碼來載入歌曲資料
     var position:Int = 0
     var songs:[Song] = []
+    
+    // // 音樂播放器
     var player:AVAudioPlayer?
+    
     var periodSlider :UISlider?
+    
     @IBOutlet weak var musicViewHolder: UIView!
     
+    // 程式碼產生元件
     let songImage: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
@@ -35,7 +42,6 @@ class MusicPlayerViewController: UIViewController {
        return label
    }()
     
-    
     let playPauseButton = UIButton()
     
     
@@ -43,6 +49,7 @@ class MusicPlayerViewController: UIViewController {
         super.viewDidLoad()
     }
     
+    // 畫面用SubView來佈局 所以在viewDidLayoutSubviews後呼叫設置
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         if musicViewHolder.subviews.count > 0 {
@@ -50,17 +57,16 @@ class MusicPlayerViewController: UIViewController {
         }
     }
     
-    
-
-    
     func configure(){
         let song = songs[position]
         songImage.image = UIImage(named: song.imageName)
         songName.text = song.trackName
         
+        // 取得Mp3 檔案位置
         let songUrl = Bundle.main.path(forResource: song.mp3Name, ofType: "mp3")
         
         do {
+            // 利用AVAudioSession 來確保其他軟體有聲音通知時也能收的到
             try AVAudioSession.sharedInstance().setMode(.default)
             try AVAudioSession.sharedInstance().setActive(true, options:.notifyOthersOnDeactivation)
 
@@ -68,6 +74,7 @@ class MusicPlayerViewController: UIViewController {
                 return print("urlstring is nil")
             }
 
+            // 依照Mp3 檔案位置撥放音樂
             player = try AVAudioPlayer(contentsOf: URL(string: songUrl)!)
 
             guard let player = player else{
@@ -95,7 +102,7 @@ class MusicPlayerViewController: UIViewController {
         musicViewHolder.addSubview(songName)
         musicViewHolder.addSubview(volumeLabel)
 
-        // Player controls
+        //  播放按鈕
         let nextButton = UIButton()
         let backButton = UIButton()
 
@@ -115,8 +122,7 @@ class MusicPlayerViewController: UIViewController {
         nextButton.addTarget(self, action: #selector(didTapNextButton), for: .touchUpInside)
         backButton.addTarget(self, action: #selector(didTapBackButton), for: .touchUpInside)
 
-      
-
+    
         playPauseButton.setBackgroundImage(UIImage(systemName: "pause.fill"), for: .normal)
         backButton.setBackgroundImage(UIImage(systemName: "backward.fill"), for: .normal)
         nextButton.setBackgroundImage(UIImage(systemName: "forward.fill"), for: .normal)
@@ -129,7 +135,6 @@ class MusicPlayerViewController: UIViewController {
         musicViewHolder.addSubview(nextButton)
         musicViewHolder.addSubview(backButton)
 
-        
         let volumeSlider = UISlider(frame: CGRect(x: 140, y: 500, width:200, height: 50))
         volumeSlider.value = 0.5
         volumeSlider.addTarget(self, action: #selector(didVolumeSlider(slider:)), for: .valueChanged)
@@ -143,15 +148,13 @@ class MusicPlayerViewController: UIViewController {
         musicViewHolder.addSubview(periodSlider!)
     }
     
-    
-  // Slider 調整
-    
+   //  音量調整
     @objc func didVolumeSlider(slider: UISlider) {
         let value = slider.value
         player?.volume = value
     }
 
-    
+    //  歌曲進度調整
     @objc func didPeriodSlider(slider: UISlider) {
         let value = slider.value
         player?.currentTime = TimeInterval(value)
@@ -159,9 +162,7 @@ class MusicPlayerViewController: UIViewController {
         player?.play()
     }
     
-    
-    
-    
+    //  按上一首歌的動作
     @objc func didTapBackButton() {
         if position > 0 {
             position = position - 1
@@ -173,6 +174,7 @@ class MusicPlayerViewController: UIViewController {
         }
     }
 
+   //  按下一首歌的動作
     @objc func didTapNextButton() {
         if position < (songs.count - 1) {
             position = position + 1
@@ -186,19 +188,16 @@ class MusicPlayerViewController: UIViewController {
 
     @objc func didTapPlayPauseButton() {
         if player?.isPlaying == true {
-            // pause
             player?.pause()
-            // show play button
             playPauseButton.setBackgroundImage(UIImage(systemName: "play.fill"), for: .normal)
         }
         else {
-            // play
             player?.play()
             playPauseButton.setBackgroundImage(UIImage(systemName: "pause.fill"), for: .normal)
         }
     }
      
-    
+    // 滑下Subview 時, 停止播放音樂
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         

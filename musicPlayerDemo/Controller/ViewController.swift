@@ -7,10 +7,7 @@
 
 import UIKit
 import FirebaseAuth
-
-
 class ViewController: UIViewController {
-
     
     @IBOutlet weak var createAccountBtn: UIButton!
     @IBOutlet weak var anonymousSignIN: UIButton!
@@ -49,19 +46,8 @@ class ViewController: UIViewController {
         self.present(musicVc, animated: true)
     }
     
+    
     @IBAction func unwindToViewVC(_ unwindSegue: UIStoryboardSegue) {
-
             
         }
-    
-    
-
     }
-    
-    
-
-
-
-
-        
-

@@ -12,16 +12,6 @@ import GoogleSignIn
 
 class MusicListViewController: UIViewController, UITableViewDelegate, UITableViewDataSource{
 
-    
-    
-    var songs = [Song]()
-    
-    @IBOutlet weak var MusicListTable: UITableView!
-    
-    
-    
-
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         setSongs()
@@ -30,6 +20,9 @@ class MusicListViewController: UIViewController, UITableViewDelegate, UITableVie
         
     }
     
+   
+    @IBOutlet weak var MusicListTable: UITableView!
+    var songs = [Song]()
     func setSongs(){
         songs = [Song(mp3Name: "Monster", albumName: "Wonder", artistName: "Shawn Mendes", imageName: "shawn-wonder", trackName: "Monster"),
                  Song(mp3Name: "TheresNothingHoldingMeBack", albumName: "Illuminate", artistName: "Shawn Mendes", imageName: "shawn  illuminate", trackName: "There's nothing holding me back"),
@@ -73,10 +66,8 @@ class MusicListViewController: UIViewController, UITableViewDelegate, UITableVie
         present(playerVC, animated: true)
         
     }
-
     
     @IBAction func signOutAction(_ sender: Any) {
-        
         do {
             try Auth.auth().signOut()
             GIDSignIn.sharedInstance()?.signOut()
